@@ -64,7 +64,7 @@ module.controller('graphics', function ($scope, $rootScope) {
     var div = document.getElementById('chart');
     $rootScope.$on('Columns', function (event, data) {$scope.columns = data });
     $rootScope.$on('data', function (event, data) { $scope.data = data });
-    $scope.types = ["line", "box", "bar","area"];
+    $scope.types = ["line", "box", "scatter","bar"];
     $scope.type = $scope.types[0];
     $scope.Count = 1;
     $scope.ChartConfigs = [
@@ -120,16 +120,30 @@ module.controller('graphics', function ($scope, $rootScope) {
             angular.forEach($scope.data, function (val, key) {
                 yAxis.push(val[value.y]);
             });
-            this.push({
-                x: xAxis,
-                y: yAxis,
-                type: value.type,
-                name: value.x + ' - ' + value.y,
-                marker: {
-                    color: value.color
-                }
-                
-            });
+            
+            if (value.type == "scatter") {
+                this.push({
+                    x: xAxis,
+                    y: yAxis,
+                    mode: "markers",
+                    name: value.x + ' - ' + value.y,
+                    marker: {
+                        color: value.color
+                    }
+                });
+            }
+            else {
+
+                this.push({
+                    x: xAxis,
+                    y: yAxis,
+                    type: value.type,
+                    name: value.x + ' - ' + value.y,
+                    marker: {
+                        color: value.color
+                    }
+                });
+            }
         },data);
         console.log(data);
         Plotly.newPlot(div, data, $scope.config, { modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d','hoverCompareCartesian'], displaylogo: false });
