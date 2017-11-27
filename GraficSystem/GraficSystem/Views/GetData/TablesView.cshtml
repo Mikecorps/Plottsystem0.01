@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "SQL Server";
+}
+
+<h2>SQL Server </h2>
+<div class="row" ng-app="SqlHandler">
+    <div class="col-md-12" ng-controller="TablesHandler" ng-cloak>
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet light portlet-fit bordered">
+            
+            <div id="pick" class="col-lg-12" style="display:flex">
+                <select class="form-control select2" ng-change="SelectDB()" ng-model="SelectedDB">
+                   <option ng-repeat="db in DBs" value="{{db.id}}">{{db.val}}</option>
+                </select>
+                <select class="form-control select2" ng-change="getTable()" ng-model="selectedTable">
+                    <option ng-repeat="table in tables" value="{{table.id}}">{{table.val}}</option>
+                </select>
+            </div>
+
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+                        
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="table"></div>
+            </div>
+        </div>
+        <div class="portlet light portlet-fit bordered" ng-controller="charts">
+            <div class="portlet-title">
+                <form novalidate>
+                    <sections style="display:flex">
+                        <label class="alert-info btn col-lg-2">Tipo de Grafica</label>
+                        <label class="btn alert-info col-lg-2">Datos a Graficar</label>
+                        <label class="btn alert-info col-lg-2">Categorias</label>
+                    </sections>
+                    <section style="display:block">
+                        <select class="select2-dropdown col-lg-2" ng-change="generate()" ng-model="config.data.type" ng-options="typeOption for typeOption in typeOptions"></select>
+                        <select multiple class="select2-dropdown col-lg-2" ng-change="generate()" ng-options="column for column in columns" ng-model="keys"></select>
+                        <select class="select2-dropdown col-lg-2" ng-change="generate()" ng-options="column for column in columns" ng-model="axis"></select>
+                    </section>
+                </form>
+
+            </div>
+            <div id="chart">
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+<script src="~/Scripts/handsontable.full.js"></script>
+    <script src="~/Scripts/plotly-latest.min.js"></script>
+<script src="~/Scripts/SqlCharts.js"></script>
+}
