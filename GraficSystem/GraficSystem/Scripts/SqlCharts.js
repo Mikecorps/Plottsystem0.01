@@ -62,28 +62,108 @@ SqlHandler.controller('TablesHandler', function ($scope, $http, $rootScope) {
 });
 
 
-SqlHandler.controller('charts', function ($scope, $rootScope) {
+SqlHandler.controller('graphics', function ($scope, $rootScope) {
+    var div = document.getElementById('chart');
     $rootScope.$on('columns', function (event, data) { $scope.columns = data });
     $rootScope.$on('data', function (event, data) { $scope.data = data });
-    $scope.chart = null;
-    $scope.config = {};
-    $scope.typeOptions = ["line", "bar", "spline", "step", "area"];
-    $scope.config.bindto = '#chart';
-    $scope.axis;
-    $scope.keys = [];
-    $scope.config.data = {};    
-    $scope.config.data.type;
-    $scope.config.data.onclick = function (d) {
-        $scope.chart.data()[0].values.splice(d.index, 1);
-        console.log($scope.chart.data()[0].values);
+    $scope.types = ["line", "box", "scatter", "bar"];
+    $scope.type = $scope.types[0];
+    $scope.Count = 1;
+    $scope.ChartConfigs = [
+       {
+           'name': 'Grafica' + $scope.Count,
+           'id': 'collapse_' + $scope.Count,
+           'x': '',
+           'y': '',
+           'type': $scope.type,
+           'color': $scope.color
+       }
+    ];
+    $scope.config = {
+        title: 'A Line Chart in Plotly',
+        height: 550,
+        width: 850,
+        font: {
+            family: 'Lato',
+            size: 16,
+            color: 'rgb(100,150,200)'
+        },
+        plot_bgcolor: 'rgba(200,255,0,0.1)',
+        margin: {
+            pad: 10
+        },
+        xaxis: {
+            title: '',
+            titlefont: {
+                color: 'black',
+                size: 12
+            },
+            rangemode: 'tozero'
+        },
+        yaxis: {
+            title: '',
+            titlefont: {
+                color: 'black',
+                size: 12
+            },
+            rangemode: 'tozero'
+        },
+
     };
     $scope.generate = function () {
-        $scope.config.data.json = $scope.data;
-        $scope.config.data.keys = { x: $scope.axis, "value": $scope.keys };
-        $scope.config.axis = { x: { type: 'category' } };
-        $scope.config.zoom = { enabled: true };
-        $scope.chart = c3.generate($scope.config);
-        
-        
+
+        var data = [];
+        angular.forEach($scope.ChartConfigs, function (value, key) {
+            var xAxis = [];
+            angular.forEach($scope.data, function (val, key) {
+                xAxis.push(val[value.x]);
+            });
+            var yAxis = [];
+            angular.forEach($scope.data, function (val, key) {
+                yAxis.push(val[value.y]);
+            });
+
+            if (value.type == "scatter") {
+                this.push({
+                    x: xAxis,
+                    y: yAxis,
+                    mode: "markers",
+                    name: value.x + ' - ' + value.y,
+                    marker: {
+                        color: value.color
+                    }
+                });
+            }
+            else {
+
+                this.push({
+                    x: xAxis,
+                    y: yAxis,
+                    type: value.type,
+                    name: value.x + ' - ' + value.y,
+                    marker: {
+                        color: value.color
+                    }
+                });
+            }
+        }, data);
+        console.log(data);
+        Plotly.newPlot(div, data, $scope.config, { modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'hoverCompareCartesian'], displaylogo: false });
+        div.on('plotly_selected', function (eventData) {
+            console.log(eventData.points);
+        });
+    };
+    $scope.newChart = function (ChartCount) {
+        $scope.Count += 1;
+        $scope.ChartConfigs.push({
+            'name': 'Grafica' + $scope.Count,
+            'id': 'collapse_' + $scope.Count,
+            'x': '',
+            'y': '',
+            'type': ''
+        });
+
     }
-  });
+
+
+});
