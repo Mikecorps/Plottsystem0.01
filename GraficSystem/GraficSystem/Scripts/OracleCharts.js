@@ -147,7 +147,7 @@ module.controller('graphics', function ($scope, $rootScope) {
         },data);
         console.log(data);
         Plotly.newPlot(div, data, $scope.config, { modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d','hoverCompareCartesian'], displaylogo: false });
-        div.on('plotly_selected', function (eventData) {
+        div.on('plotly_click', function (eventData) {
             console.log(eventData.points);
         });
     };
