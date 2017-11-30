@@ -46,12 +46,17 @@ namespace GraficSystem.Controllers
             {
                 cn.Open();
                 SqlCommand comand = new SqlCommand(sql, cn);
-                SqlDataReader reader = comand.ExecuteReader();
-                while (reader.Read())
+                comand.CommandTimeout = 60;
+                try
                 {
-                    data.Add(reader[0].ToString());
+                    SqlDataReader reader = comand.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        data.Add(reader[0].ToString());
+                    }
+                    cn.Close();
                 }
-                cn.Close();
+                catch { }
             }
             return data;
         }
