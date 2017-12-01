@@ -1,13 +1,14 @@
 ﻿var module = angular.module('excelApp', []);
 module.controller('dataTable', function ($scope,$rootScope) {
     $rootScope.$on('ExcelData', function (event, data) {
+        console.log(data[0][0]);
         $scope.columns = [];
-        angular.forEach(data[0], function (value, key) {
+        angular.forEach(data[0][0], function (value, key) {
             this.push(key);
         },$scope.columns);
         var container = document.getElementById('xple');
         table = new Handsontable(container, {
-            data: data,
+            data: data[0],
             colHeaders: $scope.columns,
             stretchH: 'all',
             width: 900,
@@ -19,7 +20,7 @@ module.controller('dataTable', function ($scope,$rootScope) {
             filters: true
 
         });
-        $rootScope.$emit('data', data);
+        $rootScope.$emit('data', data[0]);
         $rootScope.$emit('columns', $scope.columns);
     });
 
@@ -36,12 +37,32 @@ module.directive('fileread', function ($rootScope) {
                 reader.onload = function (loadEvent) {
                     scope.$apply(function () {
                         var fileread = loadEvent.target.result;
-                        var workbook = XLSX.read(fileread, { type: 'binary' });
-                        workbook.SheetNames.forEach(function (key) {
-                            scope.fileread = XLSX.utils.sheet_to_json(workbook.Sheets[key]);
+                        var extentionXlsx = /(.xlsx)$/;
+                        var extentionXls = /(.xls)$/;
+                        if (extentionXlsx.exec(file.value))
+                        {
+                            var workbook = XLSX.read(fileread, { type: 'binary' });
+                            scope.fileread = [];
+                            var cont = 0;
+                            workbook.SheetNames.forEach(function (key) {
+                                scope.fileread[cont] = XLSX.utils.sheet_to_json(workbook.Sheets[key]);
+                                cont++;
+                            });
                             $rootScope.$emit('ExcelData', scope.fileread);
-                            //console.log(scope.fileread);
-                        })
+                        }
+                        if (extentionXls.exec(file.value))
+                        {
+                            var workbook = XLS.read(fileread, { type: 'binary' });
+                            scope.fileread = [];
+                            var cont = 0;
+                            workbook.SheetNames.forEach(function (key) {
+                                scope.fileread[cont] = XLS.utils.sheet_to_row_object_array(workbook.Sheets[key]);
+                                cont++;
+                            });
+                            console.log(scope.fileread);
+                            $rootScope.$emit('ExcelData', scope.fileread);
+                        }
+                        
                     });
                 }
                 reader.readAsBinaryString(changeEvent.target.files[0]);
