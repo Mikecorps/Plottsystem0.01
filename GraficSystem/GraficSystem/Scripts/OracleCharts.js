@@ -77,39 +77,38 @@ module.controller('graphics', function ($scope, $rootScope) {
            'color': $scope.color
        }
     ];
-    $scope.config = {
-        title:'A Line Chart in Plotly',
-        height: 550,
-        width:850,
-        font: {
-            family: 'Lato',
-            size: 16,
-            color: 'rgb(100,150,200)'
-        },
-        plot_bgcolor: 'rgba(200,255,0,0.1)',
-        margin: {
-            pad: 10
-        },
-        xaxis: {
-            title: '',
-            titlefont: {
-                color: 'black',
-                size: 12
-            },
-            rangemode: 'tozero'
-        },
-        yaxis: {
-            title: '',
-            titlefont: {
-                color: 'black',
-                size: 12
-            },
-            rangemode: 'tozero'
-        },
-      
-    };
     $scope.generate = function () {
+        $scope.config = {
+            title: 'A Line Chart in Plotly',
+            height: 550,
+            width: 850,
+            font: {
+                family: 'Lato',
+                size: 16,
+                color: 'rgb(100,150,200)'
+            },
+            plot_bgcolor: 'rgba(200,255,0,0.1)',
+            margin: {
+                pad: 10
+            },
+            xaxis: {
+                title: '',
+                titlefont: {
+                    color: 'black',
+                    size: 12
+                },
+                rangemode: 'tozero'
+            },
+            yaxis: {
+                title: '',
+                titlefont: {
+                    color: 'black',
+                    size: 12
+                },
+                rangemode: 'tozero'
+            },
 
+        };
         var data = [];
         angular.forEach($scope.ChartConfigs, function (value, key) {
             var xAxis = [];
@@ -128,7 +127,9 @@ module.controller('graphics', function ($scope, $rootScope) {
                     mode: "markers",
                     name: value.x + ' - ' + value.y,
                     marker: {
-                        color: value.color
+                        color: value.color,
+                        size: 12,
+                        opacity: 0.6,
                     }
                 });
             }
@@ -141,13 +142,13 @@ module.controller('graphics', function ($scope, $rootScope) {
                     name: value.x + ' - ' + value.y,
                     marker: {
                         color: value.color
+                        
                     }
                 });
             }
         },data);
-        console.log(data);
         Plotly.newPlot(div, data, $scope.config, { modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d','hoverCompareCartesian'], displaylogo: false });
-        div.on('plotly_click', function (eventData) {
+        div.on('plotly_selected', function (eventData) {
             console.log(eventData.points);
         });
     };
