@@ -36,8 +36,7 @@ namespace GraficSystem.Controllers
                 datos.Add(DB, data);
             }
         }
-
-
+        
         private List<string> getDataBases()
         {
             List<string> data = new List<string>();
@@ -122,8 +121,7 @@ namespace GraficSystem.Controllers
             }
             return data;
         }
-
-       
+        
 
     }
 }
