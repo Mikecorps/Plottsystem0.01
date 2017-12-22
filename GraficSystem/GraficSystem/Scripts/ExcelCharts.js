@@ -1,7 +1,6 @@
-﻿var module = angular.module('excelApp', []);
-module.controller('dataTable', function ($scope,$rootScope) {
-    $rootScope.$on('ExcelData', function (event, data) {
-        console.log(data[0][0]);
+var module = angular.module('excelApp', []);
+module.controller('dataTable', function ($scope, $rootScope) {
+$rootScope.$on('ExcelData', function (event, data) {
         $scope.columns = [];
         angular.forEach(data[0][0], function (value, key) {
             this.push(key);
@@ -17,14 +16,13 @@ module.controller('dataTable', function ($scope,$rootScope) {
             //maxRows: 60,
             manualRowMove: true,
             manualColumnMove: true,
-            filters: true
+            filters: true,
+            //afterChange: console.log("the table data as change")
 
         });
         $rootScope.$emit('data', data[0]);
         $rootScope.$emit('columns', $scope.columns);
     });
-
-    
 });
 module.directive('fileread', function ($rootScope) {
     return {
@@ -59,7 +57,7 @@ module.directive('fileread', function ($rootScope) {
                                 scope.fileread[cont] = XLS.utils.sheet_to_row_object_array(workbook.Sheets[key]);
                                 cont++;
                             });
-                            console.log(scope.fileread);
+                           
                             $rootScope.$emit('ExcelData', scope.fileread);
                         }
                         
@@ -72,56 +70,63 @@ module.directive('fileread', function ($rootScope) {
     }
 });
 
+
 module.controller('graphics', function ($scope,$rootScope) {
     var div = document.getElementById('chart');
+    var isFirst = true;
     $rootScope.$on('columns', function (event, data) { $scope.columns = data });
     $rootScope.$on('data', function (event, data) { $scope.data = data });
     $scope.types = ["line", "box", "scatter", "bar"];
     $scope.type = $scope.types[0];
     $scope.Count = 1;
     $scope.ChartConfigs = [
-       {
-           'name': 'Grafica' + $scope.Count,
-           'id': 'collapse_' + $scope.Count,
-           'x': '',
-           'y': '',
-           'type': $scope.type,
-           'color': $scope.color
-       }
+   {
+       'name': 'Grafica' + $scope.Count,
+       'id': 'collapse_' + $scope.Count,
+       'x': '',
+       'y': '',
+       'type': $scope.type,
+       'color': $scope.color
+   }
     ];
-    $scope.config = {
-        title: 'A Line Chart in Plotly',
-        height: 550,
-        width: 850,
-        font: {
-            family: 'Lato',
-            size: 16,
-            color: 'rgb(100,150,200)'
-        },
-        plot_bgcolor: 'rgba(200,255,0,0.1)',
-        margin: {
-            pad: 10
-        },
-        xaxis: {
-            title: '',
-            titlefont: {
-                color: 'black',
-                size: 12
-            },
-            rangemode: 'tozero'
-        },
-        yaxis: {
-            title: '',
-            titlefont: {
-                color: 'black',
-                size: 12
-            },
-            rangemode: 'tozero'
-        },
-
-    };
+   
     $scope.generate = function () {
+       
+        $scope.config = {
+            title: '',
+            height: 550,
+            width: 850,
+            aoutosize: true,
+            font: {
+                family: 'Lato',
+                size: 16,
+                color: 'rgb(100,150,200)'
+            },
+            plot_bgcolor: 'rgba(200,255,0,0.1)',
+            margin: {
+                pad: 10
+            },
+            xaxis: {
 
+                title: '',
+                titlefont: {
+                    color: 'black',
+                    size: 12
+                },
+                rangemode: 'tozero',
+
+            },
+            yaxis: {
+                title: '',
+                titlefont: {
+                    color: 'black',
+                    size: 12
+                },
+                rangemode: 'tozero',
+            },
+
+
+        };
         var data = [];
         angular.forEach($scope.ChartConfigs, function (value, key) {
             var xAxis = [];
@@ -141,8 +146,8 @@ module.controller('graphics', function ($scope,$rootScope) {
                     name: value.x + ' - ' + value.y,
                     marker: {
                         color: value.color,
-                        size:11
-                    }
+                        size:4
+                    },
                 });
             }
             else {
@@ -158,8 +163,8 @@ module.controller('graphics', function ($scope,$rootScope) {
                 });
             }
         }, data);
-       
-        Plotly.newPlot(div, data, $scope.config, { modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'hoverCompareCartesian'], displaylogo: false });
+        
+         Plotly.newPlot(div, data, $scope.config, { modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'hoverCompareCartesian'], displaylogo: false });
         div.on('plotly_selected', function (eventData) {
             console.log(eventData.points);
         });
@@ -173,7 +178,8 @@ module.controller('graphics', function ($scope,$rootScope) {
             'y': '',
             'type': ''
         });
-
+       
+        
     }
 
 

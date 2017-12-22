@@ -36,22 +36,15 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-12 col-xs-12 col-sm-12" ng-app="chart">
-        <div class="portlet light" ng-controller="plott">
+    <div class="col-lg-12 col-xs-12 col-sm-12">
+        <div class="portlet light" >
             <div class="portlet-title">
                 <form novalidate>
-                    <sections style="display:flex">
-                        <label class="alert-info btn col-lg-2">Tipo de Grafica</label>
-                        <label class="btn alert-info col-lg-2">Datos a Graficar</label>
-                    </sections>
-                    <section style="display:block">
-                        <select class="select2-dropdown col-lg-2" ng-change="show()" ng-model="config.type1" ng-options="typeOption for typeOption in typeOptions"></select>
-                        <select multiple class="select2-dropdown col-lg-2" ng-change="show()" ng-options="head for head in heads" ng-model="value.heads"></select>
-                    </section>
+                  
                 </form>
 
             </div>
-            <div id="d3">
+            <div id="myDiv">
 
 
 
@@ -60,65 +53,94 @@
     </div>
 </div>
 @section Scripts{
-    <script src="~/scripts/pivot.js"></script>
-    <script src="~/scripts/jquery-ui.js"></script>
-    
-    <script src="~/scripts/tips_data.min.js"></script>
-    <script src="~/Scripts/checklist-model.js"></script>
-   
-    <script src="~/scripts/angular-dragdrop.min.js"></script>
-    <script src="~/scripts/ui-bootstrap-2.5.0.min.js"></script>
+    <script src="~/Scripts/plotly-latest.min.js"></script>
     <script type="text/javascript">
-    $(function () {
-        $("#output").pivotUI(
-              $.pivotUtilities.tipsData, {
-                  width:50,
-                  rows: ["sex"],
-                  cols: ["smoker"],
-                  vals: ["tip", "total_bill"],
-                  aggregatorName: "Sum over Sum",
-                  rendererName: "Bar Chart",
-                  rendererOptions: {
-                      c3: {
-                          size: { height:300, width:600}
-                      }
-                  },
-                  renderers: $.extend(
-                      $.pivotUtilities.renderers,
-                    $.pivotUtilities.c3_renderers
-                  )
-        });
-    });
-    var D3Char = angular.module('chart', ['checklist-model']);
+        var trace1 = {
+            x: [1, 24, 76],
+            y: [4, 5, 6],
+            name: 'yaxis1 data',
+            type: 'scatter'
+        };
 
-    D3Char.controller('plott', function ($scope) {
-        //Configuracio
-        $scope.chart = null;
-        $scope.config = {};
-        $scope.heads = ['upload', 'download', 'total'];
-        $scope.typeOptions = ["line", "bar", "spline", "step", "area"];
-        $scope.config.type1 = $scope.typeOptions[0];
-        $scope.value = {
-            heads: ['total']};
-        //funciones
-        $scope.show = function () {
-            var SCO = $scope.value;
-            var config = {};
-            config.bindto = '#d3';
-            config.data = {};
-            config.data.json = [
-                    { "name": 'www.site1.com', "upload": 200, "download": 200, "total": 400 },
-                { "name": 'www.site2.com', "upload": 100, "download": 300, "total": 400 },
-                { "name": 'www.site3.com', "upload": 300," download": 200, "total": 500 },
-                { "name": 'www.site4.com', "upload": 400, "download": 100, "total": 500 },
-            ];
-            config.data.keys = { "value": $scope.value.heads };
-            config.axis = { "y": { "label": { "text": "Numero de items", "position": "outer-middle" } } };
-            config.data.type =  $scope.config.type1 ;
-            config.zoom = { enabled: true };
-            $scope.chart = c3.generate(config);
-        }
-    });
+        var trace2 = {
+            x: [26, 37, 49],
+            y: [40, 50, 60],
+            name: 'yaxis2 data',
+            yaxis: 'y2',
+            xaxis:'x2',
+            type: 'scatter'
+        };
+
+        var trace3 = {
+            x: [41, 56, 68],
+            y: [40000, 50000, 60000],
+            name: 'yaxis3 data',
+            yaxis: 'y3',
+            type: 'scatter'
+        };
+
+        var trace4 = {
+            x: [57, 69, 108],
+            y: [400000, 500000, 600000],
+            name: 'yaxis4 data',
+            yaxis: 'y4',
+            type: 'scatter'
+        };
+
+        var data = [trace1,trace2];
+
+        var layout = {
+            title: 'multiple y-axes example',
+            width: 800,
+            xaxis: {
+                title: '',
+                titlefont: { color: '#1f77b4' },
+                tickfont: { color: '#1f77b4' }
+            },
+            yaxis: {
+                title: '',
+                titlefont: { color: '#1f77b4' },
+                tickfont: { color: '#1f77b4' }
+            },
+            xaxis2: {
+                title: '',
+                titlefont: { color: '#ff7f0e' },
+                tickfont: { color: '#ff7f0e' },
+                //anchor: 'free',
+                overlaying: 'x',
+                //side: 'top',
+                position: 0.05
+            },
+            yaxis2: {
+                title: '',
+                titlefont: { color: '#ff7f0e' },
+                tickfont: { color: '#ff7f0e' },
+                anchor: 'free',
+                overlaying: 'y',
+                side: 'left',
+                position: 0.05
+            },
+            /*yaxis3: {
+                title: '',
+                titlefont: { color: '#d62728' },
+                tickfont: { color: '#d62728' },
+                anchor: 'x',
+                overlaying: 'y',
+                side: 'right'
+            },
+            yaxis4: {
+                title: '',
+                titlefont: { color: '#9467bd' },
+                tickfont: { color: '#9467bd' },
+                anchor: 'free',
+                overlaying: 'y',
+                side: 'right',
+                position: 0.85
+            }*/
+        };
+
+        Plotly.newPlot('myDiv', data, layout);
+ 
     </script>
 }
 

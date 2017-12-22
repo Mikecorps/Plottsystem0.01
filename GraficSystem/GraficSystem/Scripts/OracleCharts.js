@@ -52,7 +52,7 @@ module.controller('view', function ($scope, $http, $rootScope) {
                 filters: true,
                 afterChange: function (changes, source)
                 {
-                    
+                    console.log(table.getData());
                 }
 
             });
@@ -129,7 +129,7 @@ module.controller('graphics', function ($scope, $rootScope) {
                     marker: {
                         color: value.color,
                         size: 12,
-                        opacity: 0.6,
+                        opacity: 0.5,
                     }
                 });
             }
@@ -148,7 +148,7 @@ module.controller('graphics', function ($scope, $rootScope) {
             }
         },data);
         Plotly.newPlot(div, data, $scope.config, { modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d','hoverCompareCartesian'], displaylogo: false });
-        div.on('plotly_selected', function (eventData) {
+        div.on('plotly_click', function (eventData) {
             console.log(eventData.points);
         });
     };
